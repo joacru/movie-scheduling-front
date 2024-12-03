@@ -11,6 +11,8 @@ import { fetchCharacters } from "../services/apiCharactersService";
 export const ScenesContext = createContext<{
   scene: Scene | null;
   setScene: React.Dispatch<React.SetStateAction<Scene | null>>;
+  reloadScene: boolean;
+  setReloadScene: React.Dispatch<React.SetStateAction<boolean>>;
   locations: Location[];
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
   reloadLocations: boolean;
@@ -26,6 +28,8 @@ export const ScenesContext = createContext<{
 }>({
   scene: null,
   setScene: () => {},
+  reloadScene: true,
+  setReloadScene: () => {},
   locations: [],
   setLocations: () => {},
   reloadLocations: true,
@@ -42,6 +46,7 @@ export const ScenesContext = createContext<{
 
 export const ScenesProvider = ({ children }) => {
   const [scene, setScene] = useState<Scene | null>(null);
+  const [reloadScene, setReloadScene] = useState<boolean>(true);
 
   const [locations, setLocations] = useState<Location[]>([]);
   const [reloadLocations, setReloadLocations] = useState<boolean>(true);
@@ -51,7 +56,7 @@ export const ScenesProvider = ({ children }) => {
 
   const [locationId, setLocationId] = useState<number>(0);
   useEffect(() => {
-    if (scene?.location.id) {
+    if (scene?.location?.id) {
       setLocationId(scene.location.id);
     } else {
       setLocationId(0);
@@ -82,6 +87,8 @@ export const ScenesProvider = ({ children }) => {
       value={{
         scene,
         setScene,
+        reloadScene,
+        setReloadScene,
         locations,
         setLocations,
         reloadLocations,

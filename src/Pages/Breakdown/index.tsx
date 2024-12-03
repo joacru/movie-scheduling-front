@@ -29,7 +29,7 @@ function Breakdown() {
     fetchSceneById(sceneId)
       .then((data) => context.setScene(data))
       .catch((error) => setError(error.message));
-  }, [sceneId]);
+  }, [sceneId, context.reloadScene]);
 
   const addShot = () => {
     const name = prompt("Enter the name or the type of the new shot:");
@@ -67,7 +67,7 @@ function Breakdown() {
     if (context.scene && characterId > 0) {
       addCharacter(context.scene?.id, characterId)
         .then(() => {
-          // Recargar los characters de la escena
+          context.setReloadScene((item) => !item);
           alert("Character added successfully.");
         })
         .catch((error) => alert("Error: " + error));
@@ -84,7 +84,6 @@ function Breakdown() {
   return (
     <>
       <form method="PUT" onSubmit={submitForm}>
-        <h1>Breakdown - Scene {context.scene?.name}</h1>
         {error && <p>Error: {error}</p>}
         <SceneForm />
       </form>
@@ -119,7 +118,9 @@ function Breakdown() {
             </button>
           </div>
           {context.scene?.characters?.map((character) => {
-            return <CharacterSummary key={character.id} character={character} />;
+            return (
+              <CharacterSummary key={character.id} character={character} />
+            );
           })}
         </div>
         <div>

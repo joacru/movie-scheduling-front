@@ -24,7 +24,7 @@ export async function postPutUrl<T>(
 ): Promise<T> {
   try {
     let body: string | null | undefined = JSON.stringify(data);
-    if (body == '{}') body = undefined;
+    if (body == "{}") body = undefined;
     console.log(body);
     const response = await fetch(url, {
       method: method,
@@ -55,7 +55,7 @@ export async function deleteUrl(url: string, err = "") {
 }
 
 export const fetchScenes = async () => {
-  return getUrl(`${API_BASE_URL}/scenes`, "Failed to fetch scenes.");
+  return getUrl<Scene[]>(`${API_BASE_URL}/scenes`, "Failed to fetch scenes.");
 };
 
 export const fetchSceneById = async (id: number) => {
@@ -64,6 +64,10 @@ export const fetchSceneById = async (id: number) => {
     `Failed to fetch scene with id ${id}.`
   );
 };
+
+export const createScene = async () => {
+  return postPutUrl<Scene>(`${API_BASE_URL}/scenes`, 'post', {}, 'Failed to create a new scene.');
+}
 
 export const updateScene = async (
   scene: Scene | null,
@@ -93,6 +97,10 @@ export const updateScene = async (
   );
 };
 
+export const deleteScene = async (id: number) => {
+  return deleteUrl(`${API_BASE_URL}/scenes/${id}`, 'Failed to delete the scene.');
+}
+
 export const fetchShots = async (sceneId: number) => {
   return getUrl<Shot[]>(
     `${API_BASE_URL}/scenes/${sceneId}/shots`,
@@ -105,6 +113,13 @@ export const addCharacter = async (sceneId: number, characterId: number) => {
     `${API_BASE_URL}/scenes/${sceneId}/characters/${characterId}`,
     "put",
     {},
+    "Failed to adding character."
+  );
+};
+
+export const delCharacter = async (sceneId: number, characterId: number) => {
+  return deleteUrl(
+    `${API_BASE_URL}/scenes/${sceneId}/characters/${characterId}`,
     "Failed to adding character."
   );
 };

@@ -16,7 +16,7 @@ const AppRoutes = () => {
     { path: '/', element: <Scenes /> },
     { path: '/breakdown/:sceneId', element: <Breakdown /> },
     { path: '/locations', element: <Locations /> },
-    { path: '/characters', element: <Characters /> },
+    { path: '/characters/:characterId', element: <Characters /> },
     { path: '/*', element: <NotFound /> },
   ]);
   return routes;

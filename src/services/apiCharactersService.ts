@@ -3,7 +3,17 @@ import { API_BASE_URL, getUrl, postPutUrl, deleteUrl } from "./apiService";
 import { Character } from "../types/character";
 
 export const fetchCharacters = async () => {
-  return getUrl<Character[]>(`${API_BASE_URL}/characters`, "Failed to fetch characters.");
+  return getUrl<Character[]>(
+    `${API_BASE_URL}/characters`,
+    "Failed to fetch characters."
+  );
+};
+
+export const fetchCharacterById = async (id: number) => {
+  return getUrl<Character>(
+    `${API_BASE_URL}/characters/${id}`,
+    `Failed to fetch character with id ${id}.`
+  );
 };
 
 export const createCharacter = async (
