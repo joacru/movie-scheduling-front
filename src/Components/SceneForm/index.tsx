@@ -1,18 +1,29 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 
 import { ScenesContext } from "../../Context";
+import { createLocation } from "../../services/apiService";
 
 const SceneForm = () => {
   const context = useContext(ScenesContext);
 
-  const [locationId, setLocationId] = useState<number>(0);
-  useEffect(() => {
-    if (context.scene?.location) {
-      setLocationId(context.scene.location.id);
-    } else {
-      setLocationId(0);
+  const changeLocation = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = Number(event.target.value);
+    if (value != -1) context.setLocationId(value);
+    else {
+      const name = prompt("Enter the name of the new location:");
+      if (name == null || name == "") {
+        alert("Canceled operation.");
+      } else {
+        createLocation({ name })
+          .then((data) => {
+            context.setLocations(items => [...items, data]);
+            context.setLocationId(data.id || 0);
+            alert(`Location ${name} created successfully.`);
+          })
+          .catch((error) => alert("Error: " + error));
+      }
     }
-  }, [context.scene?.location]);
+  };
 
   return (
     <div className="flex items-center mb-2 w-full">
@@ -20,7 +31,7 @@ const SceneForm = () => {
         <label>Scene</label>
         <input
           type="text"
-          value={context.scene?.name || ''}
+          value={context.scene?.name || ""}
           className="input text-center"
           onChange={(event) =>
             context.setScene((item) => {
@@ -34,7 +45,7 @@ const SceneForm = () => {
         <select
           name="intext"
           id="intext"
-          value={context.scene?.intext || 'int'}
+          value={context.scene?.intext || "int"}
           className="select"
           onChange={(event) =>
             context.setScene((item) => {
@@ -44,13 +55,13 @@ const SceneForm = () => {
           }
         >
           <option value="int">INT</option>
-          <option value="ext">NIGHT</option>
-          <option value="intext">MORNING</option>
+          <option value="ext">EXT</option>
+          <option value="intext">INT/EXT</option>
         </select>
         <select
           name="daynight"
           id="daynight"
-          value={context.scene?.daynight || 'day'}
+          value={context.scene?.daynight || "day"}
           className="select"
           onChange={(event) =>
             context.setScene((item) => {
@@ -71,22 +82,25 @@ const SceneForm = () => {
           <select
             name="location"
             id="location"
-            value={locationId}
+            value={context.locationId}
             className="select grow"
-            onChange={(event) => {
-              setLocationId(Number(event.target.value));
-            }}
+            onChange={changeLocation}
           >
-            <option value="1">Finca Los Manzanos</option>
-            <option value="2">Finca La Toma</option>
-            <option value="3">Escuela de Minas</option>
-            <option value="4">Colegio Nacional</option>
+            <option value="0">-</option>
+            <option value="-1">Create new location</option>
+            {context.locations?.map((location) => {
+              return (
+                <option key={location.id} value={location.id}>
+                  {location.name}
+                </option>
+              );
+            })}
           </select>
         </div>
         <input
           type="text"
           placeholder="Scene description"
-          value={context.scene?.description || ''}
+          value={context.scene?.description || ""}
           className="input"
           onChange={(event) =>
             context.setScene((item) => {
@@ -97,7 +111,9 @@ const SceneForm = () => {
         />
       </div>
       <div className="grow-0 flex items-center">
-        <button className="btn btn-blue w-12 h-12">Save</button>
+        <button type="submit" className="btn btn-blue w-12 h-12">
+          Save
+        </button>
       </div>
     </div>
   );
