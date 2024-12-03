@@ -27,7 +27,7 @@ function Scenes() {
             intext={scene.intext}
             daynight={scene.daynight}
             description={scene.description}
-            location={scene.location?.name}
+            location={scene.location?.name || '<Location>'}
           />
         );
       })}

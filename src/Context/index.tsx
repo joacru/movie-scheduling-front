@@ -3,7 +3,10 @@ import React, { createContext, useEffect, useState } from "react";
 import { Scene } from "../types/scene";
 import { Location } from "../types/location";
 
-import { fetchLocations } from "../services/apiService";
+import { fetchLocations } from "../services/apiLocationsService";
+import { fetchShots } from "../services/apiService";
+import { Character } from "../types/character";
+import { fetchCharacters } from "../services/apiCharactersService";
 
 export const ScenesContext = createContext<{
   scene: Scene | null;
@@ -14,6 +17,12 @@ export const ScenesContext = createContext<{
   setReloadLocations: React.Dispatch<React.SetStateAction<boolean>>;
   locationId: number;
   setLocationId: React.Dispatch<React.SetStateAction<number>>;
+  reloadShots: boolean;
+  setReloadShots: React.Dispatch<React.SetStateAction<boolean>>;
+  characters: Character[];
+  setCharacters: React.Dispatch<React.SetStateAction<Character[]>>;
+  reloadCharacters: boolean;
+  setReloadCharacters: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
   scene: null,
   setScene: () => {},
@@ -23,6 +32,12 @@ export const ScenesContext = createContext<{
   setReloadLocations: () => {},
   locationId: 0,
   setLocationId: () => {},
+  reloadShots: true,
+  setReloadShots: () => {},
+  characters: [],
+  setCharacters: () => {},
+  reloadCharacters: true,
+  setReloadCharacters: () => {},
 });
 
 export const ScenesProvider = ({ children }) => {
@@ -43,6 +58,25 @@ export const ScenesProvider = ({ children }) => {
     }
   }, [scene?.location]);
 
+  const [reloadShots, setReloadShots] = useState<boolean>(true);
+  useEffect(() => {
+    if (scene) {
+      fetchShots(scene.id).then((data) =>
+        setScene((item) => {
+          console.log(item, data);
+          if (item) return { ...item, shots: data };
+          return item;
+        })
+      );
+    }
+  }, [reloadShots]);
+
+  const [characters, setCharacters] = useState<Character[]>([]);
+  const [reloadCharacters, setReloadCharacters] = useState<boolean>(true);
+  useEffect(() => {
+    fetchCharacters().then((data) => setCharacters(data));
+  }, [reloadCharacters]);
+
   return (
     <ScenesContext.Provider
       value={{
@@ -54,6 +88,12 @@ export const ScenesProvider = ({ children }) => {
         setReloadLocations,
         locationId,
         setLocationId,
+        reloadShots,
+        setReloadShots,
+        characters,
+        setCharacters,
+        reloadCharacters,
+        setReloadCharacters,
       }}
     >
       {children}

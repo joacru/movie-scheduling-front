@@ -9,8 +9,8 @@ interface Props{
 const SceneSummary = (props: Props) => {
     const { name, intext, daynight, location = '<Location>', description } = props;
     return (
-        <div className="flex items-center mb-2 w-full font-bold">
-            <div className="p-2 w-20 text-center">
+        <div className="flex items-center mb-2 w-full">
+            <div className="p-2 w-20 text-center font-bold">
                 <p>Scene<br/>{name}</p>
             </div>
             <div className="grow-0 flex flex-col p-2 w-26 text-center">

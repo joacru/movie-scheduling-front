@@ -1,40 +1,42 @@
 import { useContext, useRef } from "react";
-import { Location } from "../../types/location";
-import { deleteLocation, updateLocation } from "../../services/apiLocationsService";
+import { Shot } from "../../types/shot";
+import { deleteShot, updateShot } from "../../services/apiShotsService";
 import { ScenesContext } from "../../Context";
 
 interface Props {
-  location: Location;
+  shot: Shot;
 }
 
-const LocationForm = (props: Props) => {
+const ShotForm = (props: Props) => {
   const context = useContext(ScenesContext);
 
-  const { location } = props;
+  const { shot } = props;
 
   const nameRef = useRef<HTMLInputElement>(null);
-  const addressRef = useRef<HTMLInputElement>(null);
+  const descriptionRef = useRef<HTMLInputElement>(null);
+  const actionRef = useRef<HTMLInputElement>(null);
 
   const submitForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    location.name = nameRef.current?.value;
-    location.address = addressRef.current?.value;
+    shot.name = nameRef.current?.value;
+    shot.description = descriptionRef.current?.value;
+    shot.action = actionRef.current?.value;
 
-    updateLocation(location)
+    updateShot(shot)
       .then(() => {
-        alert("Location updated successfully.");
+        alert("Shot updated successfully.");
       })
       .catch((error) => alert(error));
   };
 
   const deleteForm = () => {
-    if (location.id) {
-      if (confirm(`Delete the ${location.name} location?`)) {
-        deleteLocation(location.id)
+    if (shot.id) {
+      if (confirm(`Delete this shot?`)) {
+        deleteShot(shot.id)
           .then(() => {
-            context.setReloadLocations(item => !item);
-            alert("Location deleted successfully.");
+            context.setReloadShots((item) => !item);
+            alert("Shot deleted successfully.");
           })
           .catch((error) => alert(error));
       }
@@ -46,22 +48,32 @@ const LocationForm = (props: Props) => {
       <div className="flex items-center mb-2 w-full border rounded px-2 mt-2 shadow-sm">
         <div className="grow flex flex-col p-2">
           <div className="flex items-center">
-            <p className="grow-0 pr-2 w-20">Location:</p>
+            <p className="grow-0 pr-2 w-20">Shot:</p>
             <input
               type="text"
               name="name"
               ref={nameRef}
-              defaultValue={location.name}
+              defaultValue={shot.name}
               className="input"
             />
           </div>
           <div className="flex items-center">
-            <p className="grow-0 pr-2 w-20">Address:</p>
+            <p className="grow-0 pr-2 w-20">Desc.:</p>
             <input
               type="text"
-              name="address"
-              ref={addressRef}
-              defaultValue={location.address}
+              name="description"
+              ref={descriptionRef}
+              defaultValue={shot.description}
+              className="input"
+            />
+          </div>
+          <div className="flex items-center">
+            <p className="grow-0 pr-2 w-20">Action:</p>
+            <input
+              type="text"
+              name="action"
+              ref={actionRef}
+              defaultValue={shot.action}
               className="input"
             />
           </div>
@@ -83,4 +95,4 @@ const LocationForm = (props: Props) => {
   );
 };
 
-export default LocationForm;
+export default ShotForm;

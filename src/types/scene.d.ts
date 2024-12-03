@@ -8,7 +8,7 @@ export type Scene = {
   intext: string;
   daynight: string;
   description: string;
-  location: Location;
-  characters: Character[];
-  shots: Shot[];
+  location?: Location;
+  characters?: Character[];
+  shots?: Shot[];
 };

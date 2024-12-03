@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import { ScenesContext } from "../../Context";
-import { createLocation } from "../../services/apiService";
+import { createLocation } from "../../services/apiLocationsService";
 
 const SceneForm = () => {
   const context = useContext(ScenesContext);

@@ -1,10 +1,10 @@
-import { Location } from "../types/location";
 import { Scene } from "../types/scene";
+import { Shot } from "../types/shot";
 
-const API_BASE_URL =
+export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
-export async function getUrl(url: string, err = "") {
+export async function getUrl<T>(url: string, err = ""): Promise<T> {
   try {
     const response = await fetch(url);
     if (!response.ok) throw new Error(err);
@@ -23,12 +23,15 @@ export async function postPutUrl<T>(
   err = ""
 ): Promise<T> {
   try {
+    let body: string | null | undefined = JSON.stringify(data);
+    if (body == '{}') body = undefined;
+    console.log(body);
     const response = await fetch(url, {
       method: method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: body,
     });
     if (!response.ok) throw Error(err);
     data = await response.json();
@@ -56,7 +59,7 @@ export const fetchScenes = async () => {
 };
 
 export const fetchSceneById = async (id: number) => {
-  return getUrl(
+  return getUrl<Scene>(
     `${API_BASE_URL}/scenes/${id}`,
     `Failed to fetch scene with id ${id}.`
   );
@@ -90,39 +93,18 @@ export const updateScene = async (
   );
 };
 
-export const fetchLocations = async () => {
-  return getUrl(`${API_BASE_URL}/locations`, "Failed to fetch locations.");
-};
-
-export const createLocation = async (location: Location): Promise<Location> => {
-  const data = {
-    name: location.name,
-    address: location.address,
-  };
-  return postPutUrl<Location>(
-    `${API_BASE_URL}/locations`,
-    "post",
-    data,
-    "Failed to create a location."
+export const fetchShots = async (sceneId: number) => {
+  return getUrl<Shot[]>(
+    `${API_BASE_URL}/scenes/${sceneId}/shots`,
+    "Failed to fetch shots."
   );
 };
 
-export const updateLocation = async (location: Location): Promise<Location> => {
-  const data = {
-    name: location.name,
-    address: location.address,
-  };
-  return postPutUrl<Location>(
-    `${API_BASE_URL}/locations/${location.id}`,
+export const addCharacter = async (sceneId: number, characterId: number) => {
+  return postPutUrl<Scene>(
+    `${API_BASE_URL}/scenes/${sceneId}/characters/${characterId}`,
     "put",
-    data,
-    "Failed to update a location."
-  );
-};
-
-export const deleteLocation = async (id: number) => {
-  return deleteUrl(
-    `${API_BASE_URL}/locations/${id}`,
-    "Failed to delete a location."
+    {},
+    "Failed to adding character."
   );
 };
