@@ -10,6 +10,10 @@
     @apply bg-blue-500 text-white;
 }
 
+.btn-red {
+    @apply bg-red-500 text-white;
+}
+
 .input {
     @apply appearance-none border rounded w-full px-2 py-1;
 }

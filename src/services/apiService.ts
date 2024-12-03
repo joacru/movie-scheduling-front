@@ -23,7 +23,6 @@ export async function postPutUrl<T>(
   err = ""
 ): Promise<T> {
   try {
-    console.log(JSON.stringify(data));
     const response = await fetch(url, {
       method: method,
       headers: {
@@ -36,6 +35,18 @@ export async function postPutUrl<T>(
     return data as Promise<T>;
   } catch (error) {
     console.error("Put error:", error);
+    throw error;
+  }
+}
+
+export async function deleteUrl(url: string, err = "") {
+  try {
+    const response = await fetch(url, { method: "delete" });
+    if (!response.ok) throw new Error(err);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Delete error:", error);
     throw error;
   }
 }
@@ -87,6 +98,31 @@ export const createLocation = async (location: Location): Promise<Location> => {
   const data = {
     name: location.name,
     address: location.address,
-  }
-  return postPutUrl<Location>(`${API_BASE_URL}/locations`, 'post', data, 'Failed to create a location.');
+  };
+  return postPutUrl<Location>(
+    `${API_BASE_URL}/locations`,
+    "post",
+    data,
+    "Failed to create a location."
+  );
+};
+
+export const updateLocation = async (location: Location): Promise<Location> => {
+  const data = {
+    name: location.name,
+    address: location.address,
+  };
+  return postPutUrl<Location>(
+    `${API_BASE_URL}/locations/${location.id}`,
+    "put",
+    data,
+    "Failed to update a location."
+  );
+};
+
+export const deleteLocation = async (id: number) => {
+  return deleteUrl(
+    `${API_BASE_URL}/locations/${id}`,
+    "Failed to delete a location."
+  );
 };

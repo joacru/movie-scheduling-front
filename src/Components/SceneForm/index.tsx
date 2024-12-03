@@ -111,7 +111,7 @@ const SceneForm = () => {
         />
       </div>
       <div className="grow-0 flex items-center">
-        <button type="submit" className="btn btn-blue w-12 h-12">
+        <button type="submit" className="btn btn-blue w-14 h-14">
           Save
         </button>
       </div>

@@ -10,6 +10,8 @@ export const ScenesContext = createContext<{
   setScene: React.Dispatch<React.SetStateAction<Scene | null>>;
   locations: Location[];
   setLocations: React.Dispatch<React.SetStateAction<Location[]>>;
+  reloadLocations: boolean;
+  setReloadLocations: React.Dispatch<React.SetStateAction<boolean>>;
   locationId: number;
   setLocationId: React.Dispatch<React.SetStateAction<number>>;
 }>({
@@ -17,6 +19,8 @@ export const ScenesContext = createContext<{
   setScene: () => {},
   locations: [],
   setLocations: () => {},
+  reloadLocations: true,
+  setReloadLocations: () => {},
   locationId: 0,
   setLocationId: () => {},
 });
@@ -25,9 +29,10 @@ export const ScenesProvider = ({ children }) => {
   const [scene, setScene] = useState<Scene | null>(null);
 
   const [locations, setLocations] = useState<Location[]>([]);
+  const [reloadLocations, setReloadLocations] = useState<boolean>(true);
   useEffect(() => {
     fetchLocations().then((data) => setLocations(data));
-  }, []);
+  }, [reloadLocations]);
 
   const [locationId, setLocationId] = useState<number>(0);
   useEffect(() => {
@@ -45,6 +50,8 @@ export const ScenesProvider = ({ children }) => {
         setScene,
         locations,
         setLocations,
+        reloadLocations,
+        setReloadLocations,
         locationId,
         setLocationId,
       }}
